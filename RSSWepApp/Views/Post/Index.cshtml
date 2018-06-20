@@ -1,0 +1,64 @@
+﻿@model PagedList.IPagedList<RSSWepApp.Models.Article>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+@{
+    ViewBag.Title = "PostPage";
+}
+
+<h3>Новостная лента</h3>
+@using (Html.BeginForm("Index", "Post", FormMethod.Post))
+{
+    <label for="currentFilter">Источник ленты</label>
+    @Html.DropDownList("currentFilter", new SelectList(ViewBag.Sources));
+    <br />
+    @Html.RadioButton("sortOrder", "Date", true)
+    <span>Сортировать по дате</span>
+    @Html.RadioButton("sortOrder", "Source")
+    <span>Сортировать по источнику</span>
+    <br />
+    <input type="submit" value="Просмотреть" />
+    <br />
+}
+
+<table class="table">
+    <tr>
+        <th>
+            Источник
+        </th>
+        <th>
+            Название новости
+        </th>
+        <th>
+            Описание новости
+        </th>
+        <th>
+            Дата публикации
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Source.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PublishDate)
+            </td>
+        </tr>
+    }
+
+</table>
+<br />
+
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("Index",
+        new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))

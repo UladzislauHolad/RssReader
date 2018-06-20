@@ -1,0 +1,35 @@
+﻿@model PagedList.IPagedList<RSSWepApp.Models.Article>
+
+@{
+    ViewBag.Title = "Ajax";
+    var options = new AjaxOptions()
+    {
+        UpdateTargetId = "container",
+        Url = Url.Action("ShowNews"),
+        LoadingElementId = "loadingIndicator",
+    };
+}
+
+<h3>Новостная лента</h3>
+@using (Ajax.BeginForm(options))
+{
+    <label for="currentFilter">Источник ленты</label>
+    @Html.DropDownList("currentFilter", new SelectList(ViewBag.Sources));
+    <br/>
+    @Html.RadioButton("sortOrder", "Date", true)
+    <span>Сортировать по дате</span>
+    @Html.RadioButton("sortOrder", "Source")
+    <span>Сортировать по источнику</span>
+    <br/>
+    <input type="submit" value="Просмотреть" />
+    <img id="loadingIndicator" src="~/Content/ajax-loader.gif" hidden="hidden" />
+    <br/>
+    <div id="container">
+        @Html.Action("ShowNews")
+    </div>
+}
+
+@section scripts
+{
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+}
